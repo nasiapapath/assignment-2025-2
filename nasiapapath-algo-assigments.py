@@ -52,3 +52,47 @@ class SparseTable:
                 right = mid - 1
         
         return left
+        def _search_key_position(self, key):
+       
+        sorted_table = self._sorting_table()
+        for i in range(self.mm):
+            if sorted_table[i] == key:
+                return True, i
+            elif sorted_table[i] > key:
+                return False, i
+        return False, self.mm
+    
+    def _count_authentic_keys(self, start_position):
+        
+        sorted_table = self._sorting_table()
+        if start_position >= len(sorted_table):
+            return 0
+            
+        count = 0
+        current_value = sorted_table[start_position]
+        
+        for i in range(start_position, self.mm):
+            if sorted_table[i] != current_value:
+                break
+            count += 1
+        
+        return count
+    
+    def _move_to_right(self, relative_position, elements):
+        
+        if elements == 0:
+            return
+
+        elements_to_move = []
+        for i in range(elements):
+            position= (self.head + relative_position + i) % self.mm
+            elements_to_move.append(self.table[position])
+        
+        for i in range(elements - 1, -1, -1):
+            from_position= (self.head + relative_position + i) % self.mm
+            to_position= (self.head + relative_position + i + 1) % self.mm
+            self.table[to_position] = elements_to_move[i]
+        
+        if relative_position == 0:
+            self.head = (self.head - 1) % self.mm
+    
