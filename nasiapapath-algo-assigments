@@ -1,0 +1,54 @@
+import sys
+import json
+import math
+
+
+class SparseTable:
+    
+    def __init__(self, nn, mm, k, initial_key):
+       
+        self.nn = nn
+        self.mm = mm
+        self.k = k
+        self.nn_authentic = 1  
+
+        if k == 1:
+             self.mm = int(self.nn[0] * self.mm[0])
+        else:
+            self.mm = int(self.nn[k-2] * self.mm[k-1])  
+        
+        self.table = [initial_key] * self.mm
+        self.head = 0  
+        
+        print(f"CREATE with k={k}, n_k={nn}, m_k={mm}, key={initial_key}")
+        self._print_table()
+    
+    def _print_table(self):
+        result = []
+        for i in range(self.mm):
+            if i == self.head:
+                result.append(f">{self.table[i]}<")
+            else:
+                result.append(str(self.table[i]))
+        print(f"[{', '.join(result)}]")
+    
+    def _sorting_table(self):
+        sorted_table = []
+        for i in range(self.mm):
+            position= (self.head + i) % self.mm
+            sorted_table.append(self.table[position])
+        return sorted_table
+    
+    def _binary_search_position(self, key):
+        
+        sorted_table = self._sorting_table()
+        left, right = 0, self.mm - 1
+        
+        while left <= right:
+            mid = (left + right) // 2
+            if sorted_table[mid] < key:
+                left = mid + 1
+            else:
+                right = mid - 1
+        
+        return left
